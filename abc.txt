@@ -1,0 +1,33 @@
+--- MySQL ---
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: root
+  password: root
+  socket: /tmp/mysql.sock
+
+/usr/local/mysql/bin/mysql -u root -proot
+
+
+sudo /usr/local/mysql/support-files/mysql.server start
+sudo /usr/local/mysql/support-files/mysql.server stop
+sudo /usr/local/mysql/support-files/mysql.server restart
+
+--- SSH ---
+Your identification has been saved in /Users/Q/.ssh/id_rsa.
+Your public key has been saved in /Users/Q/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:Z1svKnBUoLVvad+KrQ92Zi9d4Mvkde4dQyrr5VO7/J0 quangdanang1@gmail.com
+The key's randomart image is:
++---[RSA 4096]----+
+|        o.       |
+|       o ..      |
+|      . ..       |
+|        .. .  .  |
+|       .S B .. o |
+|      . .= + o=.+|
+|       o  +.*B+Bo|
+|        .. O*=*.B|
+|         .==+ooEB|
++----[SHA256]-----+
