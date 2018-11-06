@@ -14,6 +14,56 @@ sudo /usr/local/mysql/support-files/mysql.server start
 sudo /usr/local/mysql/support-files/mysql.server stop
 sudo /usr/local/mysql/support-files/mysql.server restart
 
+--- Ruby - Email ---
+require 'net/smtp'
+
+addressee = 'quangdanang1@gmail.com'
+server    = 'smtp.gmail.com'
+port      = 587
+account   = 'quanguk01@gmail.com'
+from      = 'quanguk01@gmail.com'
+name      = 'Q.'
+domain    = 'gmail.com'
+subject   = 'Testing'
+body      = 'Hello.'
+marker    = "PART_SEPARATOR"
+filename  = "test-attachment"
+filetext  = "attachment contents"
+
+print "Enter password for #{account}: "
+password  = $stdin.gets.chomp
+
+# Define the main headers.
+part1 = <<EOF
+From: #{name} <#{from}>
+To: <#{addressee}>
+Subject: #{subject}
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary=#{marker}
+--#{marker}
+EOF
+
+# Define the message action
+part2 = <<EOF
+Content-Type: text/plain
+Content-Transfer-Encoding:8bit
+
+#{body}
+--#{marker}
+EOF
+
+# Define the attachment section
+
+message = part1 + part2
+
+puts message
+
+smtp = Net::SMTP.new server, port
+smtp.enable_starttls
+
+smtp.start(domain, account, password, :login) do
+  smtp.send_message message, from, addressee
+end
 --- SSH ---
 Your identification has been saved in /Users/Q/.ssh/id_rsa.
 Your public key has been saved in /Users/Q/.ssh/id_rsa.pub.
