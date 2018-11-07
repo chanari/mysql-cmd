@@ -14,6 +14,14 @@ sudo /usr/local/mysql/support-files/mysql.server start
 sudo /usr/local/mysql/support-files/mysql.server stop
 sudo /usr/local/mysql/support-files/mysql.server restart
 
+--- JS - Get country ---
+$(document).ready(function() {
+		$.getJSON('http://ipinfo.io', function(json) {
+				/*optional stuff to do after success */
+				if (json.country == 'VN') { alert('Xin chao !!!') } 
+        else { alert('Hi !!!') }
+		});
+});
 --- Ruby - Email ---
 require 'net/smtp'
 
