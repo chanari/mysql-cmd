@@ -14,6 +14,14 @@ sudo /usr/local/mysql/support-files/mysql.server start
 sudo /usr/local/mysql/support-files/mysql.server stop
 sudo /usr/local/mysql/support-files/mysql.server restart
 
+require 'mysql2'  
+
+--- Ruby - Databases ---
+#my = Mysql.new(hostname, username, password, databasename)  
+client = Mysql2::Client.new(:host => "localhost", :username => "root", :password => "root", :database => "testpro_development")
+rs = client.query("SELECT * from users")
+rs.each { |u| puts u['username']}
+
 --- JS - Get country ---
 $(document).ready(function() {
 		$.getJSON('http://ipinfo.io', function(json) {
