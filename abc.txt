@@ -31,6 +31,7 @@ $(document).ready(function() {
 		});
 });
 --- Ruby - Email ---
+1.
 require 'net/smtp'
 
 addressee = 'quangdanang1@gmail.com'
@@ -80,6 +81,45 @@ smtp.enable_starttls
 smtp.start(domain, account, password, :login) do
   smtp.send_message message, from, addressee
 end
+
+2. 
+require "mail"
+require "net/smtp"
+
+print 'Send to      : ' 
+mailrec = gets.chomp
+print 'Subject      : '
+subj = gets.chomp
+print 'Message      : '
+mess = gets.chomp
+print 'Your mail    : '
+mailsen = gets.chomp
+print 'Your Password: '
+system 'stty -echo'
+mailpas = $stdin.gets.chomp
+system 'stty echo'
+puts
+puts '--- Please Wait ---'
+
+Mail.defaults do
+ delivery_method :smtp, { 
+  				:address              => "smtp.gmail.com",
+                         	:port                 => 587,
+                         	:domain               => 'google.com',
+                         	:user_name            => "#{mailsen}",
+                         	:password             => "#{mailpas}",
+                         	:authentication       => 'plain',
+                         	:enable_starttls_auto => true  }
+end
+Mail.deliver do
+  from    "#{mailsen}"
+  to      "#{mailrec}"
+  subject "#{subj}"
+  body    "#{mess}"
+end
+
+puts '--- Done ---'
+
 --- SSH ---
 Your identification has been saved in /Users/Q/.ssh/id_rsa.
 Your public key has been saved in /Users/Q/.ssh/id_rsa.pub.
