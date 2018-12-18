@@ -7,7 +7,7 @@ default: &default
   password: root
   socket: /tmp/mysql.sock
   
-Delete DS-Store:  find . -name ".DS_Store" -delete
+Delete DS-Store:  find . -name ".DS_Store" -type f -delete
 
 /usr/local/mysql/bin/mysql -u root -proot
 
