@@ -1118,6 +1118,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         400:
           description: "Bad request"
           schema:
@@ -1153,6 +1155,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         400:
           description: "Bad request"
           schema:
@@ -1240,6 +1244,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         401:
           description: "Unauthorized"
           schema:
