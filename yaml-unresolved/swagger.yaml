@@ -1488,14 +1488,6 @@ definitions:
       name:
         type: "string"
         example: "Sample Suggestion3"
-      area_id:
-        type: "array"
-        items:
-          type: "integer"
-          example: 1
-      prefecture_id:
-        type: "integer"
-        example: 1
 
   SearchKeywordSuggestions.List.Response.Success:
     allOf:
