@@ -2072,11 +2072,11 @@ definitions:
   Stations.List.Station:
     type: "object"
     required:
-      - station_id
+      - id
       - name
       - furigana_name
     properties:
-      station_id:
+      id:
         type: "integer"
         example: 19800
       name:
