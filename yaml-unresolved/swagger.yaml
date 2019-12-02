@@ -1512,16 +1512,6 @@ definitions:
         type: "string"
         example: "An account with this email address already exists."
 
-  Error.Bookmarks.NotABookmark:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        example: 110
-      message:
-        type: "string"
-        example: "Ticket was not bookmarked."
-
   Error.User.Order.AlreadyUsed:
     type: "object"
     properties:
@@ -3108,33 +3098,6 @@ definitions:
       notification_count:
         type: "integer"
         example: 0
-
-  User.Point.History.List.Response.Success:
-    allOf:
-      - $ref: "#/definitions/Paginated.Response"
-      - type: object
-        properties:
-          data:
-            type: array
-            items:
-              $ref: "#/definitions/User.Point.History.List.Record"
-
-  User.Point.History.List.Record:
-    type: "object"
-    required:
-      - name
-      - point
-      - created_at
-    properties:
-      name:
-        type: "string"
-        example: "Sample ticket purchase"
-      point:
-        type: "integer"
-        example: 500
-      created_at:
-        type: "string"
-        example: "2019-08-10"
 
   User.NotificationSettings:
     type: "object"
