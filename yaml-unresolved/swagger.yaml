@@ -896,7 +896,58 @@ paths:
         200:
           description: "Success"
           schema:
-            $ref: "#/definitions/Tickets.List.Response.Success"
+            allOf:
+              - $ref: "#/definitions/Paginated.Response"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: "object"
+                      properties:
+                        id:
+                          type: "string"
+                          example: "id123"
+                        stations:
+                          type: "array"
+                          items:
+                            $ref: "#/definitions/Stations.List.Station"
+                        price:
+                          type: "integer"
+                          example: 1400
+                        sale_price:
+                          type: "string"
+                          example: "1,400 円"
+                        clinic_name:
+                          type: "string"
+                          example: "<name>"
+                        clinic_image:
+                          type: "string"
+                          example: "https://placekitten.com/200/200"
+                        title:
+                          type: "string"
+                          example: "Sample Ticket"
+                        display_view:
+                          type: "integer"
+                          example: 42
+                        expired:
+                          type: "boolean"
+                          example: false
+                        station_detail:
+                          type: "string"
+                          example: "渋谷"
+                        recommend:
+                          type: "object"
+                          properties:
+                            title:
+                              type: "string"
+                              example: "<title>"
+                            content:
+                              type: "string"
+                              example: "<content>"
+                            image:
+                              type: "string"
+                              example: "<image>"
         401:
           description: "Unauthorized"
           schema:
@@ -2189,6 +2240,7 @@ definitions:
       - title
       - content
       - image
+      - url
     properties:
       id:
         type: "string"
@@ -2202,6 +2254,9 @@ definitions:
       image:
         type: "string"
         example: "https://placekitten.com/200/200"
+      url:
+        type: "string"
+        example: "<url>"
 
   Ticket.Response.Success:
     type: "object"
