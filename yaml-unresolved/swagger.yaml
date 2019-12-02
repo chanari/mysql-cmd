@@ -1321,6 +1321,26 @@ paths:
           description: "Success"
           schema:
             $ref: "#/definitions/Response.StatusOK"
+            
+  /users/qa/clinic_qa:
+    post:
+      tags:
+        - "users"
+      summary: "Registers the purchased ticket for usage."
+      parameters:
+        - in: body
+          name: qa
+          schema:
+            $ref: "#/definitions/Clinic.QA.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
 
   /users/points/history:
     get:
@@ -3187,6 +3207,39 @@ definitions:
       subject:
         type: "string"
         example: "<subject>"
+        
+  Clinic.QA.Request:
+    type: "object"
+    required:
+      - email
+      - question_type
+      - clinic_name
+      - staff_name
+      - phone_number
+      - home_page
+      - question_content
+    properties:
+      email:
+        type: "string"
+        example: "<email>"
+      question_type:
+        type: "string"
+        example: "<question_type>"
+      clinic_name:
+        type: "string"
+        example: "<clinic_name>"
+      staff_name:
+        type: "string"
+        example: "<staff_name>"
+      phone_number:
+        type: "string"
+        example: "<phone_number>"
+      home_page:
+        type: "string"
+        example: "<home_page>"
+      question_content:
+        type: "string"
+        example: "<question_content>"
         
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
