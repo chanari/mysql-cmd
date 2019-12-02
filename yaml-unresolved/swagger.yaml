@@ -1,0 +1,3064 @@
+swagger: "2.0"
+info:
+  description: >
+    Welcome to the Kireipass API! You can use our API to access Kireipass API endpoints, which can get and process information on our health and beauty care services in database.
+
+    The Kireipass API is organized around REST. Our API has predictable resource-oriented URLs, accepts form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes, authentication, and verbs."
+  version: "2.0.0"
+  title: "Kireipass API"
+# host: "dev-api.kireipass.jp"
+# basePath: "/api/v2"
+schemes:
+  - "https"
+  - "http"
+
+tags:
+  - name: "areas"
+    description: "Everything about areas"
+  - name: "clinics"
+    description: "Everything about clinics"
+  - name: "coupons"
+    description: "Everything about coupons"
+  - name: "issues"
+    description: "Everything about issues"
+  - name: "meta"
+    description: "Meta-information about API and/or app"
+  - name: "notifications"
+    description: "Everything about notifications"
+  - name: "parts"
+    description: "Everything about parts"
+  - name: "prefectures"
+    description: "Everything about prefectures"
+  - name: "push-notifications"
+    description: "Everything about push notifications"
+  - name: "search"
+    description: "Everything about clinics"
+  - name: "tickets"
+    description: "Everything about tickets"
+  - name: "users"
+    description: "Everything about users"
+
+paths:
+  /areas/suggestions:
+    get:
+      tags:
+        - "areas"
+      summary: "Retrieves suggestions of areas by keyword."
+      parameters:
+        - in: "query"
+          name: "keyword"
+          description: "Keyword"
+          type: "string"
+          required: false
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/AreaKeywordSuggestions.List.Response.Success"
+
+  /areas/{id}/stations:
+    get:
+      tags:
+        - "areas"
+      summary: "Retrieves the list of stations of a specific area."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Area ID"
+          type: "integer"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Stations.List.Response.Success"
+
+
+  /coupons/verify:
+    post:
+      tags:
+        - "coupons"
+      summary: "Verifies the validity of a coupon and returns discount amount on success."
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: "#/definitions/Coupon.Verify.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Coupon.Verify.Success"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error.RequiredParameterMissing"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /clinics/{id}:
+    get:
+      tags:
+        - "clinics"
+      summary: "Retrieves a specific clinic by the ID"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Clinic ID"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Clinic.Response.Success"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /clinics/{id}/tickets:
+    get:
+      tags:
+        - "clinics"
+      summary: "Retrieves list of tickets of a particular clinic"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Clinic ID"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Tickets.List.Response.Success"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /meta/app-version:
+    get:
+      tags:
+        - "meta"
+      summary: "Returns information about latest available application version"
+      parameters:
+        - in: "query"
+          name: "platform"
+          description: "Mobile OS platform (ios)"
+          type: "string"
+          enum: ["ios"]
+          required: true
+        - in: "query"
+          name: "version"
+          description: "Version of application requesting the app version information (example: '1.0.0')"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Meta.AppVersion.Response.Success"
+
+  /meta/auth-info:
+    get:
+      tags:
+        - "meta"
+      summary: "Returns the URLs for auth/registration."
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Meta.AuthInfo.Response.Success"
+
+  /notifications:
+    get:
+      tags:
+        - "notifications"
+      summary: "Retrieves the list of notifications."
+      parameters:
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Notifications.List.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /notifications/{id}/read:
+    post:
+      tags:
+        - "notifications"
+      summary: "Changes the read status of a notification."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Notification id"
+          type: "integer"
+          required: true
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /issue-categories/{id}:
+    get:
+      tags:
+        - "issues"
+      summary: "Retrieves list of issues together with relevant treatments."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Issue category ID"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Issues.List.Response.Success"
+
+  /prefectures:
+    get:
+      tags:
+        - "prefectures"
+      summary: "Retrieves the list of prefectures."
+      parameters:
+        - in: "query"
+          name: "keyword"
+          description: "Keyword"
+          type: "string"
+          required: false
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Prefectures.List.Response.Success"
+
+  /prefectures/{id}/areas:
+    get:
+      tags:
+        - "prefectures"
+      summary: "Retrieves the list of areas of a specific prefecture."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Prefecture ID"
+          type: "integer"
+          required: true
+        - in: "query"
+          name: "keyword"
+          description: "Keyword"
+          type: "string"
+          required: false
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Areas.List.Response.Success"
+
+  /parts:
+    get:
+      tags:
+        - "parts"
+      summary: "Retrieves list of parts."
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Parts.List.Response.Success"
+
+  /parts/{id}/issues:
+    get:
+      tags:
+        - "parts"
+      summary: "Retrieves list of issues together with relevant treatments by parts id."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Parts id"
+          type: "integer"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Issues.List.Response.Success"
+
+  /push-notifications/device-tokens:
+    post:
+      tags:
+        - "push-notifications"
+      summary: "Registers the device token of the current user"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Device token to be registered"
+          required: true
+          schema:
+            $ref: "#/definitions/PushNotification.DeviceToken.Register.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error.RequiredParameterMissing"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /search:
+    post:
+      tags:
+        - "search"
+      summary: "Retrieves search results by given conoditions."
+      parameters:
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+        - in: "body"
+          name: "body"
+          description: "Search parameters."
+          schema:
+            $ref: "#/definitions/Search.Request"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Tickets.List.Response.Success"
+
+  /search/count:
+    post:
+      tags:
+        - "search"
+      summary: "Retrieves search result count by given conoditions."
+      parameters:
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+        - in: "body"
+          name: "body"
+          description: "Search parameters."
+          schema:
+            $ref: "#/definitions/Search.Request"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/SearchResult.Count.Success.Response"
+
+  /search/suggestions:
+    get:
+      tags:
+        - "search"
+      summary: "Retrieves suggestions of search keywords."
+      parameters:
+        - in: "query"
+          name: "keyword"
+          description: "Keyword"
+          type: "string"
+          required: false
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/SearchKeywordSuggestions.List.Response.Success"
+
+  /search/special-conditions:
+    get:
+      tags:
+        - "search"
+      summary: "Retrieves the list of special conditions."
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Search.SpecialConditions.List.Success.Response"
+
+  /search/history:
+    get:
+      tags:
+        - "search"
+      summary: "Retrieves search result count by given conoditions."
+      parameters:
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Search.History.Success.Response"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /tickets/{id}:
+    get:
+      tags:
+        - "tickets"
+      summary: "Retrieves a specific ticket by the ID"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Ticket ID"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Ticket.Response.Success"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /tickets/{id}/relevant:
+    get:
+      tags:
+        - "tickets"
+      summary: "Retrieves list of tickets relevant to a particular ticket"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Ticket ID"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Tickets.List.Response.Success"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /tickets/{id}/bookmark:
+    post:
+      tags:
+        - "tickets"
+      summary: "Adds ticket to the list of bookmarked tickets for given user"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Ticket ID"
+          type: "string"
+          required: true
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error.Bookmarks.AlreadyBookmarked"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /tickets/{id}/remove-bookmark:
+    post:
+      tags:
+        - "tickets"
+      summary: "Removes ticket from the list of bookmarked tickets for given user"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Ticket ID"
+          type: "string"
+          required: true
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error.Bookmarks.NotABookmark"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /tickets/{id}/order:
+    post:
+      tags:
+        - "tickets"
+      summary: "Creates a ticket purchase order."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Ticket ID"
+          type: "string"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Ticket purchase information."
+          required: true
+          schema:
+            $ref: "#/definitions/Orders.Ticket.Purchase.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Orders.Ticket.Purchase.Response"
+        400:
+          description: |
+            This HTTPStatusCode can be returned on following occasions.
+            - 'code'; 'error'
+            - 5; "Required parameter is missing or invalid <parameter_name>."
+            - 141; "The credit card could not be registered."
+            - 142; "The purchase of the ticket failed."
+            - 0002; "指定されたポイントは1回の最大指定可能ポイントを上回っています。{0}, {1} "
+            {0}：指定可能最高ポイント（1回あたり）
+            {1}：指定ポイント
+            - 0003; "指定されたポイントは当月内の最大指定可能ポイントを上回っています。{0}, {1}"
+            {0}：指定可能最高ポイント（当月内）
+            {1}：指定ポイント
+          schema:
+            $ref: "#/definitions/Error.User.Order.Payment.InvalidCreditCard"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /tickets/popular:
+    get:
+      tags:
+        - "tickets"
+      summary: "Gets a list of popular tickets."
+      parameters:
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Tickets.List.Response.Success"
+
+  /users/register:
+    post:
+      tags:
+        - "users"
+      summary: "Start the process of registering new user"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "E-mail address to be registered"
+          required: true
+          schema:
+            $ref: "#/definitions/User.Register.Request"
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Invalid e-mail address"
+          schema:
+            $ref: "#/definitions/Error.User.InvalidEmail"
+        406:
+          description: "E-mail already registered"
+          schema:
+            $ref: "#/definitions/Error.User.DuplicateEmail"
+
+  /users/logout:
+    post:
+      tags:
+        - "users"
+      summary: "Logs the current user out."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Device token of the current device"
+          required: true
+          schema:
+            $ref: "#/definitions/PushNotification.DeviceToken.Register.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/withdraw:
+    post:
+      tags:
+        - "users"
+      summary: "Withdraws the current user account."
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/email:
+    get:
+      tags:
+        - "users"
+      summary: "Gets the email address of the logged in user."
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.Email.Response"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+    put:
+      tags:
+        - "users"
+      summary: "Updates the email address of the logged in user."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "E-mail address to be registered"
+          required: true
+          schema:
+            $ref: "#/definitions/User.Email.Update.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Invalid e-mail address"
+          schema:
+            $ref: "#/definitions/Error.User.InvalidEmail"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        406:
+          description: "E-mail already registered"
+          schema:
+            $ref: "#/definitions/Error.User.DuplicateEmail"
+
+  /users/invite-code:
+    get:
+      tags:
+        - "users"
+      summary: "Gets the invite code of of the logged in user."
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.InviteCode.Response"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/bookmarks:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieves list of tickets bookmarked by the user"
+      parameters:
+        - in: "query"
+          name: "sort"
+          description: "Desired sorting"
+          type: "string"
+          default: "added_desc"
+          enum: ["added_desc", "price_asc", "created_desc"]
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.Bookmarks.List.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/recommended-ticket-categories:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieves list of recommended tickets for the user."
+      parameters:
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/RecommendedTicketCategories.List.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/recommended-ticket-categories/{id}/tickets:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieves list of tickets browsed by the user."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Ticket recommendation category ID"
+          type: "integer"
+          required: true
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Tickets.List.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/browsed-tickets:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieves list of tickets browsed by the user."
+      parameters:
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Tickets.List.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/search-related-tickets:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieves list of tickets relevant to tickets searched by the user."
+      parameters:
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Tickets.List.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/payment-info:
+    get:
+      tags:
+        - "users"
+      summary: "Gets payment information of the user"
+      parameters:
+        - in: "query"
+          name: "ticket_id"
+          description: "Ticket ID"
+          type: "string"
+          required: true
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.PaymentInfo.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/orders:
+    get:
+      tags:
+        - "users"
+      summary: "Retrieves list of all purchased tickets (by default not yet used tickets only)"
+      parameters:
+        - in: "query"
+          name: "used"
+          description: "Return only used tickets instead of unused"
+          type: "boolean"
+          default: false
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.Order.List.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/orders/{id}/booking-info:
+    get:
+      tags:
+        - "users"
+      summary: "Shows information required to make a reservation for an ordered and paid for ticket/order"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Order ID"
+          type: "string"
+          required: true
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.Orders.ReservationInfo"
+        400:
+          description: "Already used"
+          schema:
+            $ref: "#/definitions/Error.User.Order.AlreadyUsed"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        402:
+          description: "Not paid yet"
+          schema:
+            $ref: "#/definitions/Error.User.Order.NotPaid"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /users/orders/{id}/payment-info/conbini:
+    get:
+      tags:
+        - "users"
+      summary: "Shows payment information; returns valid data in case user chose convenience store as a payment method during order"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Order ID"
+          type: "string"
+          required: true
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.Orders.PaymentInfo.Conbini"
+        400:
+          description: "Already paid"
+          schema:
+            $ref: "#/definitions/Error.User.Order.PaymentInfo.AlreadyPaid"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        403:
+          description: "Bad payment method"
+          schema:
+            $ref: "#/definitions/Error.User.Order.PaymentInfo.IncorrectPaymentMethod"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /users/orders/{id}/use:
+    post:
+      tags:
+        - "users"
+      summary: "Registers the purchased ticket for usage."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Order ID"
+          type: "string"
+          required: true
+        - in: body
+          name: data
+          schema:
+            $ref: "#/definitions/User.Orders.UseTicket.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error.RequiredParameterMissing"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /users/orders/{id}/rate:
+    post:
+      tags:
+        - "users"
+      summary: "Rates the received service."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Order ID"
+          type: "string"
+          required: true
+        - in: body
+          name: data
+          schema:
+            $ref: "#/definitions/User.Orders.Rating.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error.RequiredParameterMissing"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+
+  /users/points:
+    get:
+      tags:
+        - "users"
+      summary: "Returns information about points accumulated by the user"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.Points.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/points/history:
+    get:
+      tags:
+        - "users"
+      summary: "Returns points usage history of the user."
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.Point.History.List.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/profile:
+    get:
+      tags:
+        - "users"
+      summary: "Returns user profile related info"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.Profile.Response.Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+  /users/notification-settings:
+    post:
+      tags:
+        - "users"
+      summary: "Updates notification settings of the user."
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: "#/definitions/User.NotificationSettings"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+    get:
+      tags:
+        - "users"
+      summary: "Returns notification settings of the user."
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/User.NotificationSettings"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+
+securityDefinitions:
+  access_token:
+    type: "apiKey"
+    name: "access-token"
+    in: "header"
+  client:
+    type: "apiKey"
+    name: "client"
+    in: "header"
+  uid:
+    type: "apiKey"
+    name: "uid"
+    in: "header"
+
+definitions:
+  Paginated.Response:
+    type: "object"
+    required:
+      - total
+      - per_page
+      - total_pages
+      - current_page
+      - previous_page
+      - from
+      - to
+      - next_page
+    properties:
+      total:
+        type: "integer"
+        example: 25
+      per_page:
+        type: "integer"
+        example: 10
+      total_pages:
+        type: "integer"
+        example: 3
+      current_page:
+        type: "integer"
+        example: 1
+      previous_page:
+        type: "integer"
+        example: 3
+      from:
+        type: "integer"
+        example: 1
+      to:
+        type: "integer"
+        example: 10
+      next_page:
+        type: "integer"
+        example: 2
+
+  Error.Unauthorized:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 1
+      message:
+        type: "string"
+        example: "Access credential is invalid."
+
+  Error.NotFound:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 4
+      message:
+        type: "string"
+        example: "Requested entity was not found."
+
+  Error.RequiredParameterMissing:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 5
+      message:
+        type: "string"
+        example: "Required parameter is missing or invalid: <parameter_name>"
+
+  Error.Bookmarks.AlreadyBookmarked:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 200
+      message:
+        type: "string"
+        example: "Ticket was already bookmarked."
+
+  Error.User.InvalidEmail:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 101
+      message:
+        type: "string"
+        example: "The provided email address is invalid."
+
+  Error.User.DuplicateEmail:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 102
+      message:
+        type: "string"
+        example: "An account with this email address already exists."
+
+  Error.Bookmarks.NotABookmark:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 110
+      message:
+        type: "string"
+        example: "Ticket was not bookmarked."
+
+  Error.User.Order.AlreadyUsed:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 120
+      message:
+        type: "string"
+        example: "Order was already used."
+
+  Error.User.Order.NotPaid:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 121
+      message:
+        type: "string"
+        example: "Order was not yet paid."
+
+  Error.User.Order.PaymentInfo.AlreadyPaid:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 130
+      message:
+        type: "string"
+        example: "Order was already paid."
+
+  Error.User.Order.PaymentInfo.IncorrectPaymentMethod:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 131
+      message:
+        type: "string"
+        example: "User chose different payment method earlier."
+
+  Error.User.Order.Payment.InvalidCreditCard:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 141
+      message:
+        type: "string"
+        example: "The credit card could not be registered."
+
+  Error.User.Order.Payment.PurchaseFailure:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        example: 142
+      message:
+        type: "string"
+        example: "The purchase of the ticket failed."
+
+  AreaKeywordSuggestions.List.Response.Success:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/AreaKeywordSuggestions.List.KeywordSuggestion"
+
+  AreaKeywordSuggestions.List.KeywordSuggestion:
+    type: "object"
+    properties:
+      prefectures:
+        type: "array"
+        items:
+          $ref: "#/definitions/AreaKeywordSuggestions.List.Prefecture"
+      areas:
+        type: "array"
+        items:
+          $ref: "#/definitions/AreaKeywordSuggestions.List.Area"
+      stations:
+        type: "array"
+        items:
+          $ref: "#/definitions/AreaKeywordSuggestions.List.Station"
+
+  AreaKeywordSuggestions.List.Prefecture:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Suggestion1"
+
+  AreaKeywordSuggestions.List.Area:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Suggestion2"
+      prefecture_id:
+        type: "integer"
+        example: 1
+
+  AreaKeywordSuggestions.List.Station:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Suggestion3"
+      area_id:
+        type: "array"
+        items:
+          type: "integer"
+          example: 1
+      prefecture_id:
+        type: "integer"
+        example: 1
+
+  SearchKeywordSuggestions.List.Response.Success:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/KeywordSuggestions.List.KeywordSuggestion"
+
+  KeywordSuggestions.List.KeywordSuggestion:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "Sample Suggestion"
+
+  Coupon.Verify.Request:
+    type: "object"
+    required:
+      - code
+      - ticket_id
+      - price
+    properties:
+      code:
+        type: "string"
+        description: "Coupon code"
+        example: "KUMAPON19"
+      ticket_id:
+        type: "string"
+        description: "Ticket ID"
+        example: "id123"
+      price:
+        type: "integer"
+        description: "Total price of the purchase"
+        example: "2000"
+
+  Coupon.Verify.Success:
+    type: "object"
+    required:
+      - discount
+      - discount_amount_formatted
+    properties:
+      discount:
+        type: "integer"
+        example: 1000
+      discount_amount_formatted:
+        type: "string"
+        example: "1,000円"
+
+  Clinic.Response.Success:
+    type: "object"
+    required:
+      - id
+      - stations
+      - name
+      - images
+      - feature
+      - detail
+      - doctor_name
+      - doctor_image
+      - doctor_detail
+      - doctor_career_history
+      - address
+      - address_instruction
+      - available_time
+      - doctor_count
+      - tags
+    properties:
+      id:
+        type: "string"
+        example: "id123"
+      stations:
+        type: "array"
+        items:
+          $ref: "#/definitions/Stations.List.Station"
+      name:
+        type: "string"
+        example: "<name>"
+      images:
+        type: "array"
+        items:
+          type: "string"
+          example: "https://placekitten.com/200/200"
+      feature:
+        type: "string"
+        example: "<feature>"
+      detail:
+        type: "string"
+        example: "detail"
+      doctor_name:
+        type: "string"
+        example: "doctor_name"
+      doctor_image:
+        type: "string"
+        example: "https://placekitten.com/200/200"
+      doctor_detail:
+        type: "string"
+        example: "doctor_detail"
+      doctor_career_history:
+        type: "string"
+        example: "doctor_career_history"
+      address:
+        type: "string"
+        example: "<address>"
+      address_instruction:
+        type: "string"
+        example: "<address_instruction>"
+      available_time:
+        type: "string"
+        example: "<available_time>"
+      phone_number:
+        type: "string"
+        example: "<phone_number>"
+      doctor_count:
+        type: "integer"
+        example: 3
+      staff_count:
+        type: "integer"
+        example: 42
+      home_page:
+        type: "string"
+        example: "https://shibuya.clinic"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+          example: "facial"
+      target_clinics:
+        type: "array"
+        minItems: 0
+        maxItems: 10
+        items:
+          type: "object"
+          required:
+            - text
+            - url
+          properties:
+            text:
+              type: "string"
+            url:
+              type: "string"
+              example: "https://ebisu.clinic/info.txt"
+      station_detail:
+        type: "string"
+        example: "渋谷"
+
+  Meta.AppVersion.Response.Success:
+    type: "object"
+    required:
+      - platform
+      - last_version
+      - force_version_up
+    properties:
+      platform:
+        type: "integer"
+        example: 1
+      last_version:
+        type: "string"
+        example: "1.1.1"
+      force_version_up:
+        type: boolean
+        example: true
+
+  Meta.AuthInfo.Response.Success:
+    type: "object"
+    required:
+      - login_url
+      - yahoo_signup_url
+      - facebook_signup_url
+      - line_signup_url
+    properties:
+      login_url:
+        type: "string"
+        example: "https://stg-id.gmo.jp/gui/auth/login/sso?ckey=70cc5a614ee72fbd11012c0e17085f09eb4da4c88d3586ac99f8dc3c056f1bd095210efa955a39877094c40f3dd02ee69f3a91fbcb19eb9e1443fcb8e1e1c41446260955d75d20a4a0f0049f1d79ed0ff01dd3b865c97e2894c720480633f665b0297120af5e5fe20a3c8fd870546e84ca9b4ebe564386e11447f5bf3b9418a5114cf75e01b2f1c66d845a07741da494a39bc10de7fe1569a052081993b9c9a53fc9ef34b4269f677319c38809a9b4b36985c2a38a9b69fd"
+      yahoo_signup_url:
+        type: "string"
+        example: "https://dev-api.kireipass.jp/authen/yahoo/login?omniauth_window_type=newWindow&auth_origin_url=https://dev-www.kireipass.jp/oauth_callback"
+      facebook_signup_url:
+        type: "string"
+        example: "https://dev-api.kireipass.jp/authen/facebook/login?omniauth_window_type=newWindow&auth_origin_url=https://dev-www.kireipass.jp/oauth_callback"
+      line_signup_url:
+        type: "string"
+        example: "https://dev-api.kireipass.jp/authen/line/login?omniauth_window_type=newWindow&auth_origin_url=https://dev-www.kireipass.jp/oauth_callback"
+
+  Notifications.List.Response.Success:
+    allOf:
+      - $ref: "#/definitions/Paginated.Response"
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Notifications.List.Notification"
+            example:
+              - id: 1
+                title: "Sample notification 1"
+                content_url: "https://kireipass.jp"
+                is_read: false
+                created_at: "2019-08-10"
+              - id: 2
+                title: "Sample notification 2"
+                content_url: "https://kireipass.jp"
+                is_read: false
+                created_at: "2019-08-9"
+              - id: 3
+                title: "Sample notification 3"
+                content_url: "https://kireipass.jp"
+                is_read: false
+                created_at: "2019-08-8"
+              - id: 4
+                title: "Sample notification 4"
+                content_url: "https://kireipass.jp"
+                is_read: false
+                created_at: "2019-08-7"
+
+  Notifications.List.Notification:
+    type: "object"
+    required:
+      - id
+      - title
+      - content_url
+      - is_read
+      - created_at
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      title:
+        type: "string"
+        example: "Sample notification"
+      content_url:
+        type: "string"
+        example: "https://kireipass.jp"
+      is_read:
+        type: "boolean"
+        example: false
+      created_at:
+        type: "string"
+        example: "2019-08-10"
+
+  Issues.List.Response.Success:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Issues.List.Issue"
+
+  Issues.List.Issue:
+    type: "object"
+    required:
+      - id
+      - name
+      - treatments
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Issue"
+      treatments:
+        type: "array"
+        items:
+          $ref: "#/definitions/Treatments.List.Treatment"
+
+  Prefectures.List.Response.Success:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Prefectures.List.Prefecture"
+            example:
+              - id: 1
+                name: Tokyo
+              - id: 2
+                name: Osaka
+              - id: 3
+                name: Kyoto
+              - id: 4
+                name: Hokkaido
+              - id: 5
+                name: Toyama
+              - id: 6
+                name: Okinawa
+
+  Prefectures.List.Prefecture:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Tokyo"
+
+  Areas.List.Response.Success:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Areas.List.Area"
+              example:
+                - id: 1
+                  name: "Ebisu-Hiroo-Shibuya"
+                  ticket_count: 30
+                  stations:
+                    example:
+                      - id: 1
+                        name: Ebisu
+                        ticket_count: 10
+                      - id: 2
+                        name: Hiroo
+                        ticket_count: 10
+                      - id: 3
+                        name: Shibuya
+                        ticket_count: 10
+                - id: 2
+                  name: "Ginza-Higashi Ginza"
+                  ticket_count: 20
+                  stations:
+                    example:
+                      - id: 4
+                        name: Ginza
+                        ticket_count: 10
+                      - id: 5
+                        name: Higashi Ginza
+                        ticket_count: 10
+                - id: 3
+                  name: "Shinjuku-Nishi Shinjuku"
+                  ticket_count: 20
+                  stations:
+                    example:
+                      - id: 6
+                        name: Shinjuku
+                        ticket_count: 10
+                      - id: 7
+                        name: Nishi Shinjuku
+                        ticket_count: 10
+
+  Areas.List.Area:
+    type: "object"
+    required:
+      - id
+      - name
+      - ticket_count
+      - stations
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Ebisu-Hiroo-Shibuya"
+      ticket_count:
+        type: "integer"
+        example: 20
+      stations:
+        type: "array"
+        items:
+          $ref: "#/definitions/Area.Stations.List.Station"
+        example:
+          - station_id: 1
+            name: Shinagawa
+            ticket_count: 10
+          - station_id: 2
+            name: Shibuya
+            ticket_count: 10
+          - station_id: 3
+            name: Shinjuku
+            ticket_count: 10
+
+  Area.Stations.List.Station:
+    type: "object"
+    required:
+      - id
+      - name
+      - ticket_count
+    properties:
+      station_id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Ebisu"
+      ticket_count:
+        type: "integer"
+        example: 20
+
+  Stations.List.Response.Success:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Stations.List.Station"
+
+  Parts.List.Response.Success:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Parts.List.Part"
+
+  Parts.List.Part:
+    type: "object"
+    properties:
+      id:
+        type: integer
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Part"
+
+  Parts.TreatmentCategories.List.Response.Success:
+    allOf:
+      - $ref: "#/definitions/Paginated.Response"
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Parts.TreatmentCategories.List.TreatmentCategory"
+            example:
+              - id: 1
+                name: "Sample Treatment Category 1"
+                treatments:
+                  - id: 2
+                    name: "Sample Treatment 1"
+              - id: 3
+                name: "Sample Treatment Category 2"
+                treatments:
+                  - id: 4
+                    name: "Sample Treatment 2"
+
+  Parts.TreatmentCategories.List.TreatmentCategory:
+    type: "object"
+    required:
+      - id
+      - name
+      - treatments
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Treatment"
+      treatments:
+        type: "array"
+        items:
+          $ref: "#/definitions/Treatments.List.Treatment"
+
+  Treatments.List.Treatment:
+    type: "object"
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Treatment"
+
+  PushNotification.DeviceToken.Register.Request:
+    type: "object"
+    required:
+      - "device_token"
+    properties:
+      device_token:
+        type: "string"
+        example: "amnscevsnkl"
+
+  Orders.List.Order:
+    type: "object"
+    required:
+      - id
+      - ticket_id
+      - clinic_name
+      - clinic_address
+      - clinic_image
+      - ticket_name
+      - uses_left
+      - ticket_status
+    properties:
+      id:
+        type: "string"
+        description: "Order ID"
+        example: "id321"
+      ticket_id:
+        type: "string"
+        example: "id123"
+      clinic_name:
+        type: "string"
+        example: "Shibuya Clinic"
+      clinic_address:
+        type: "string"
+        example: "<clinic_address>"
+      clinic_image:
+        type: "string"
+        example: "https://placekitten.com/200/200"
+      ticket_name:
+        type: "string"
+        example: "Awesome super-ticket"
+      uses_left:
+        type: "integer"
+        example: 4
+      ticket_status:
+        type: "string"
+        description: |
+          There can be 4 types of statuses-
+          unpaid (支払い待ち), paid (支払い済み), reserved (予約済み), used (利用済み), expired(利用期限切れ).
+        example: "paid"
+      expiration_date:
+        type: "string"
+        example: "2019-08-10T13:21:39+00:00"
+      reservation_date:
+        type: "string"
+        example: "2019-08-10T13:21:39+00:00"
+      survey_taken:
+        type: "boolean"
+        example: false
+
+  Orders.Ticket.Purchase.Request:
+    type: "object"
+    required:
+      - ticket_count
+      - total_price
+    properties:
+      ticket_count:
+        type: "integer"
+        description: "Number of tickets purchasing"
+        example: "2"
+      points:
+        type: "integer"
+        description: "Points used"
+        example: "200"
+      coupon_code:
+        type: "string"
+        description: "Coupon code"
+        example: "KUMAPON19"
+      total_price:
+        type: "integer"
+        description: "Total prices"
+        example: "400"
+      credit_card_seq:
+        type: "string"
+        description: "Credit card ID, set if a card is already being registered"
+        example: "01"
+      payment_token:
+        type: "string"
+        description: "In case users register new credit card"
+        example: "abcxyz"
+      conbini:
+        $ref: "#/definitions/User.PaymentInfoOrder.Conbini"
+
+  Orders.Ticket.Purchase.Response:
+    type: "object"
+    required:
+      - id
+    properties:
+      id:
+        type: "string"
+        description: "Order ID"
+        example: "id123"
+      payment_deadline:
+        type: "string"
+        description: "Payment deadline. This is set only in case of conbini payment."
+        example: "2019-08-10T13:21:39+00:00"
+
+  Stations.List.Station:
+    type: "object"
+    required:
+      - station_id
+      - name
+      - furigana_name
+    properties:
+      station_id:
+        type: "integer"
+        example: 19800
+      name:
+        type: "string"
+        example: "渋谷"
+      furigana_name:
+        type: "string"
+        example: "しぶや"
+
+  Tickets.List.Response.Success:
+    allOf:
+      - $ref: "#/definitions/Paginated.Response"
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Tickets.List.Ticket"
+
+  Tickets.List.Ticket:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "id123"
+      stations:
+        type: "array"
+        items:
+          $ref: "#/definitions/Stations.List.Station"
+      price:
+        type: "integer"
+        example: 1400
+      sale_price:
+        type: "string"
+        example: "1,400 円"
+      clinic_name:
+        type: "string"
+        example: "<name>"
+      clinic_image:
+        type: "string"
+        example: "https://placekitten.com/200/200"
+      title:
+        type: "string"
+        example: "Sample Ticket"
+      display_view:
+        type: "integer"
+        example: 42
+      expired:
+        type: "boolean"
+        example: false
+      station_detail:
+        type: "string"
+        example: "渋谷"
+
+  RecommendedTicketCategories.List.Response.Success:
+    allOf:
+      - $ref: "#/definitions/Paginated.Response"
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/RecommendedTicketCategories.List.TicketCategory"
+
+  RecommendedTicketCategories.List.TicketCategory:
+    type: "object"
+    required:
+      - id
+      - title
+      - content
+      - image
+    properties:
+      id:
+        type: "string"
+        example: "id123"
+      title:
+        type: "string"
+        example: "Sample Ticket"
+      content:
+        type: "string"
+        example: "Description about the ticket."
+      image:
+        type: "string"
+        example: "https://placekitten.com/200/200"
+
+  Ticket.Response.Success:
+    type: "object"
+    required:
+      - id
+      - stations
+      - sale_price
+      - clinic_id
+      - clinic_name
+      - title
+      - display_view
+      - clinic_images
+      - is_bookmarked
+      - reward_point
+      - tags
+      - feature
+      - recommended_for
+      - treatment_details
+      - treatment_flow_details
+      - treatment_precaution
+      - doctor_message
+      - available_days
+      - available_time
+      - validity_period
+      - usage_limit_detail
+      - restriction_detail
+      - precaution
+      - clinic_info_image
+      - clinic_address
+      - clinic_address_instruction
+      - reservation_info
+    properties:
+      id:
+        type: "string"
+        example: "id123"
+      stations:
+        type: "array"
+        items:
+          $ref: "#/definitions/Stations.List.Station"
+      price:
+        type: "integer"
+        example: 1400
+      sale_price:
+        type: "string"
+        example: "1,400 円"
+      clinic_id:
+        type: "string"
+        example: "id123"
+      clinic_name:
+        type: "string"
+        example: "<name>"
+      title:
+        type: "string"
+        example: "Sample Ticket"
+      display_view:
+        type: "integer"
+        example: 42
+      clinic_images:
+        type: "array"
+        minimum: 1
+        maximum: 5
+        items:
+          type: "string"
+          example: "https://placekitten.com/200/200"
+      is_bookmarked:
+        type: "boolean"
+        example: true
+      reward_point:
+        type: "integer"
+        example: 100
+      tags:
+        type: "array"
+        items:
+          type: "string"
+          example: "tag"
+      feature:
+        type: "string"
+        example: "<feature>"
+      recommended_for:
+        type: "string"
+        example: "<recommended_for>"
+      relevant_tickets:
+        type: "array"
+        items:
+          $ref: "#/definitions/RelevantTickets.List.Ticket"
+      treatment_image:
+        type: "string"
+        example: "https://placekitten.com/200/200"
+      treatment_details:
+        type: "array"
+        items:
+          $ref: "#/definitions/TreatmentDetails.List.TreatmentDetail"
+      treatment_flow_image:
+        type: "string"
+        example: "https://placekitten.com/200/200"
+      treatment_time:
+        type: "integer"
+        example: 60
+      treatment_flow_details:
+        type: "array"
+        items:
+          $ref: "#/definitions/TreatmentFlowDetails.List.TreatmentFlowDetail"
+      treatment_precaution:
+        type: "string"
+        example: "<treatment_precaution>"
+      doctor_message:
+        type: "string"
+        example: "<customer_message>"
+      available_days:
+        description: >
+          The days when the treatment is available.
+          The array contains the boolean values for the following days respectively.
+          Mon, Tues, Wed, Thurs, Fri, Sat, Sun, Holidays
+        type: "array"
+        items:
+          type: "boolean"
+          example: true
+      available_time:
+        type: "string"
+        example: "<available_time>"
+      validity_period:
+        type: "integer"
+        example: 90
+      usage_limit_detail:
+        type: "string"
+        example: "usage_limit_detail"
+      branches:
+        type: "array"
+        items:
+          $ref: "#/definitions/Ticket.Branches.List.Branch"
+      restriction_detail:
+        type: "string"
+        example: "restriction_detail"
+      precaution:
+        type: "string"
+        example: "<precaution>"
+      clinic_info_image:
+        type: "string"
+        example: "https://placekitten.com/200/200"
+      clinic_address:
+        type: "string"
+        example: "<clinic_address>"
+      clinic_address_instruction:
+        type: "string"
+        example: "<clinic_address_instruction>"
+      clinic_phone_number:
+        type: "string"
+        example: "<clinic_phone_number>"
+      reservation_info:
+        type: "string"
+        example: "Lorem ipsum…"
+      station_detail:
+        type: "string"
+        example: "渋谷"
+      expired:
+        type: "boolean"
+        example: false
+
+  RelevantTickets.List.Ticket:
+    type: "object"
+    required:
+      - id
+      - title
+      - sale_price
+    properties:
+      id:
+        type: "string"
+        example: "id321"
+      title:
+        type: "string"
+        example: "<title>"
+      price:
+        type: "integer"
+        example: 1400
+      sale_price:
+        type: "string"
+        example: "1,400 円"
+
+  Ticket.Branches.List.Branch:
+    type: "object"
+    required:
+      - title
+      - url
+    properties:
+      title:
+        type: "string"
+        example: "<branch_title>"
+      url:
+        type: "string"
+        example: "https://kireipass.jp"
+
+  SearchResult.Count.Success.Response:
+    type: "object"
+    properties:
+      count:
+        type: "integer"
+        example: 50
+
+  Search.SpecialConditions.List.Success.Response:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Search.SpecialConditions.List.SpecialCondition"
+            example:
+              - id: 1
+                title: "Special Condition 1"
+              - id: 2
+                title: "Special Condition 2"
+              - id: 3
+                title: "Special Condition 3"
+
+  Search.SpecialConditions.List.SpecialCondition:
+    type: "object"
+    required:
+      - id
+      - title
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      title:
+        type: "string"
+        example: "Special Condition 1"
+
+  Search.Conditions.Treatments:
+    description: "Issues and Treatments"
+    type: "object"
+    properties:
+      issue_id:
+        type: "integer"
+        example: 1
+      treatment_id:
+        type: "array"
+        items:
+          type: "integer"
+          example: 1
+
+  Search.Conditions.PriceRange:
+    description: "Price Range"
+    type: "object"
+    properties:
+      from:
+        type: "integer"
+        minimum: 5000
+        maximum: 100000
+        example: 5000
+      to:
+        type: "integer"
+        minimum: 5000
+        maximum: 100000
+        example: 100000
+
+  Search.History.Success.Response:
+    allOf:
+      - $ref: "#/definitions/Paginated.Response"
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/Search.History.List.Record"
+
+  Search.History.List.Record:
+    type: "object"
+    properties:
+      keyword:
+        type: "string"
+        example: "Keyword"
+      prefectures:
+        type: "array"
+        items:
+          $ref: "#/definitions/Search.History.List.Record.Prefecture"
+      areas:
+        type: "array"
+        items:
+          $ref: "#/definitions/Search.History.List.Record.Area"
+      stations:
+        type: "array"
+        items:
+          $ref: "#/definitions/Search.History.List.Record.Station"
+      treatments:
+        type: "array"
+        items:
+          $ref: "#/definitions/Search.History.List.Record.Treatments"
+      special_conditions:
+        type: "array"
+        items:
+          $ref: "#/definitions/Search.History.List.Record.SpecialCondition"
+      price_range:
+        $ref: "#/definitions/Search.History.List.Record.PriceRange"
+      sort:
+        type: "string"
+        example: "price_asc"
+
+  Search.History.List.Record.Prefecture:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Tokyo"
+
+  Search.History.List.Record.Area:
+    type: "object"
+    required:
+      - id
+      - name
+      - prefecture_id
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Ebisu-Hiroo-Shibuya"
+      prefecture_id:
+        type: "integer"
+        example: 1
+
+  Search.History.List.Record.Station:
+    type: "object"
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Ebisu"
+      area_id:
+        type: "array"
+        items:
+          type: "integer"
+          example: 1
+      prefecture_id:
+        type: "integer"
+        example: 1
+
+
+  Search.History.List.Record.Issue:
+    type: "object"
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Issue"
+
+  Search.History.List.Record.Treatment:
+    type: "object"
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Sample Treatment"
+
+  Search.History.List.Record.Treatments:
+    type: "object"
+    properties:
+      issue:
+        $ref: "#/definitions/Search.History.List.Record.Issue"
+      treatment:
+        type: "array"
+        items:
+          $ref: "#/definitions/Search.History.List.Record.Treatment"
+
+  Search.History.List.Record.SpecialCondition:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 1
+      name:
+        type: "string"
+        example: "Special Condition"
+
+  Search.History.List.Record.PriceRange:
+    type: "object"
+    properties:
+      string_formatted:
+        type: "string"
+        example: "5,000円〜10,0000円"
+      from:
+        type: "integer"
+        minimum: 5000
+        maximum: 100000
+        example: 5000
+      to:
+        type: "integer"
+        minimum: 5000
+        maximum: 100000
+        example: 100000
+
+  Search.Request:
+    type: "object"
+    properties:
+      keyword:
+        description: "Keyword"
+        type: "string"
+        example: "keyword"
+      prefectures:
+        description: "Prefecture ID"
+        type: "array"
+        items:
+          type: "integer"
+          example: 1
+      areas:
+        description: "Area ID"
+        type: "array"
+        items:
+          type: "integer"
+      stations:
+        description: "Station ID"
+        type: "array"
+        items:
+          type: "integer"
+      treatments:
+        type: "array"
+        items:
+          $ref: "#/definitions/Search.Conditions.Treatments"
+      special_conditions:
+        description: "Special Conditions"
+        type: "array"
+        items:
+          type: "integer"
+          example: 1
+      price_range:
+        $ref: "#/definitions/Search.Conditions.PriceRange"
+      sort:
+        description: "Desired sorting"
+        type: "string"
+        enum: ["added_desc", "price_asc"]
+
+  TreatmentDetails.List.TreatmentDetail:
+    type: "object"
+    required:
+      - title
+      - content
+    properties:
+      title:
+        type: "string"
+        example: "<title>"
+      content:
+        type: "string"
+        example: "<content>"
+
+  TreatmentFlowDetails.List.TreatmentFlowDetail:
+    type: "object"
+    required:
+      - title
+    properties:
+      title:
+        type: "string"
+        example: "<title>"
+      content:
+        type: "string"
+        example: "<content>"
+
+  User.Register.Request:
+    type: "object"
+    required:
+      - "email"
+    properties:
+      email:
+        type: "string"
+        example: "email@address.com"
+
+  User.Email.Response:
+    type: "object"
+    required:
+      - "email"
+    properties:
+      email:
+        type: "string"
+        example: "email@address.com"
+
+  User.Email.Update.Request:
+    type: "object"
+    required:
+      - "email"
+    properties:
+      email:
+        type: "string"
+        example: "email@address.com"
+
+  User.InviteCode.Response:
+    type: "object"
+    required:
+      - "code"
+    properties:
+      code:
+        type: "string"
+        example: "sk9au1"
+
+  User.Bookmarks.List.Response.Success:
+    allOf:
+      - $ref: "#/definitions/Paginated.Response"
+      - type: object
+        properties:
+          data:
+            type: "array"
+            items:
+              $ref: "#/definitions/Tickets.List.Ticket"
+
+  User.Order.List.Response.Success:
+    allOf:
+      - $ref: "#/definitions/Paginated.Response"
+      - type: object
+        properties:
+          data:
+            type: "array"
+            items:
+              $ref: "#/definitions/Orders.List.Order"
+            example:
+              - id: id321
+                ticket_id: id123
+                clinic_name: Shibuya Clinic
+                clinic_address: <clinic_address>
+                clinic_image: https://placekitten.com/200/200
+                ticket_name: Awesome super-ticket
+                uses_left: 4
+                ticket_status: unpaid
+                expiration_date: "2019-08-10"
+                reservation_date: "2019-08-10"
+                survey_taken: false
+              - id: id322
+                ticket_id: id124
+                clinic_name: Ebisu Clinic
+                clinic_address: <clinic_address>
+                clinic_image: https://placekitten.com/200/200
+                ticket_name: Awesome super-ticket
+                uses_left: 4
+                ticket_status: paid
+                expiration_date: "2019-08-10"
+                reservation_date: "2019-08-10"
+                survey_taken: false
+              - id: id323
+                ticket_id: id124
+                clinic_name: Shibuya Clinic
+                clinic_address: <clinic_address>
+                clinic_image: https://placekitten.com/200/200
+                ticket_name: Awesome super-ticket
+                uses_left: 4
+                ticket_status: reserved
+                expiration_date: "2019-08-10"
+                reservation_date: "2019-08-10"
+                survey_taken: false
+              - id: id324
+                ticket_id: id125
+                clinic_name: Shibuya Clinic
+                clinic_address: <clinic_address>
+                clinic_image: https://placekitten.com/200/200
+                ticket_name: Awesome super-ticket
+                uses_left: 4
+                ticket_status: used
+                expiration_date: "2019-08-10"
+                reservation_date: "2019-08-10"
+                survey_taken: false
+              - id: id325
+                ticket_id: id126
+                clinic_name: Ebisu Clinic
+                clinic_address: <clinic_address>
+                clinic_image: https://placekitten.com/200/200
+                ticket_name: Awesome super-ticket
+                uses_left: 4
+                ticket_status: used
+                expiration_date: "2019-08-10"
+                reservation_date: "2019-08-10"
+                survey_taken: false
+              - id: id326
+                ticket_id: id127
+                clinic_name: Shibuya Clinic
+                clinic_address: <clinic_address>
+                clinic_image: https://placekitten.com/200/200
+                ticket_name: Awesome super-ticket
+                uses_left: 4
+                ticket_status: used
+                expiration_date: "2019-08-10"
+                reservation_date: "2019-08-10"
+                survey_taken: false
+
+  User.Orders.ReservationInfo:
+    type: "object"
+    required:
+      - id
+      - customer_id
+      - reservation_info
+    properties:
+      id:
+        type: "string"
+        example: "id322"
+      customer_id:
+        type: "integer"
+        example: 89
+      phone_number:
+        type: "string"
+        example: "123-232-456"
+      booking_url:
+        type: "string"
+        example: "https://bookme.shibuya.clinic"
+      booking_mail:
+        type: "string"
+        example: "bookme@shibuya.clinic"
+      line_username:
+        type: "string"
+        example: "@awesome_clinic"
+      reservation_info:
+        type: "string"
+        example: "Lorem ipsum…"
+
+  User.PaymentInfo.Success:
+    type: "object"
+    properties:
+      latest_payment_method:
+        type: "string"
+        example: "Conbini"
+      last_paid_card_seq:
+        type: "string"
+        example: "01"
+      latest_conbini_code:
+        type: "string"
+        example: "1"
+      credit_cards:
+        type: "object"
+        $ref: "#/definitions/User.PaymentInfo.CreditCard"
+      conbini:
+        type: "object"
+        $ref: "#/definitions/User.PaymentInfo.Conbini"
+      ticket_can_buy:
+        type: "integer"
+        example: 5
+
+  User.PaymentInfo.CreditCard:
+    type: "array"
+    items:
+      type: "object"
+      required:
+        - card_no
+        - validity_period
+        - card_seq
+      properties:
+        card_no:
+          type: "string"
+          example: "*******32"
+        card_seq:
+          type: "string"
+          description: "Credit card ID"
+          example: "01"
+        validity_period:
+          type: "string"
+          example: "11/13"
+
+  User.PaymentInfo.Conbini:
+    type: "object"
+    required:
+      - first_name_kana
+      - last_name_kana
+      - first_name_kanji
+      - last_name_kanji
+      - phone_number
+    properties:
+      first_name_kana:
+        type: "string"
+        example: "キレイ"
+      last_name_kana:
+        type: "string"
+        example: "ハナコ"
+      first_name_kanji:
+        type: "string"
+        example: "綺麗"
+      last_name_kanji:
+        type: "string"
+        example: "花子"
+      phone_number:
+        type: "string"
+        example: "818320934"
+
+  User.PaymentInfoOrder.Conbini:
+    type: "object"
+    required:
+      - id
+      - first_name_kana
+      - last_name_kana
+      - first_name_kanji
+      - last_name_kanji
+      - phone_number
+    properties:
+      id:
+        type: "string"
+        description: >
+          ID of the convenient store;
+          00007 - セブンイレブン
+          10001 - ローソン
+          10002 - ファミリーマート
+          10005 - ミニストップ
+          10008 - セイコーマート
+        example: "00007"
+      first_name_kana:
+        type: "string"
+        example: "キレイ"
+      last_name_kana:
+        type: "string"
+        example: "ハナコ"
+      first_name_kanji:
+        type: "string"
+        example: "綺麗"
+      last_name_kanji:
+        type: "string"
+        example: "花子"
+      phone_number:
+        type: "string"
+        example: "818320934"
+
+  User.Orders.PaymentInfo.Conbini:
+    type: "object"
+    required:
+      - clinic_image
+      - clinic_name
+      - ticket_id
+      - ticket_name
+      - deadline
+      - method_name
+      - receipt_label
+      - receipt_value
+    properties:
+      clinic_image:
+        type: "string"
+        example: "https://placekitten.com/200/200"
+      clinic_name:
+        type: "string"
+        example: "Shibuya Clinic"
+      ticket_id:
+        type: "string"
+        example: "id123"
+      ticket_name:
+        type: "string"
+        example: "Super-awesome ticket"
+      deadline:
+        type: "string"
+        example: "2019-08-10T13:21:39+00:00"
+      method_name:
+        type: "string"
+        example: "Convenience store payment (Lawson)"
+      method_info:
+        type: "string"
+        example: "https://how.to/pay-at/convenience-store"
+      receipt_label:
+        type: "string"
+      receipt_value:
+        type: "string"
+        example: "LW 19164047 3018"
+      receipt_extra_label:
+        type: "string"
+      receipt_extra_value:
+        type: "string"
+        example: "7078"
+      amount_formatted:
+        type: "string"
+        example: "32,400円"
+
+  User.Orders.UseTicket.Request:
+    type: "object"
+    required:
+      - use_count
+    properties:
+      use_count:
+        type: "integer"
+        example: "1"
+
+  User.Orders.Rating.Request:
+    type: "object"
+    required:
+      - counselling
+      - staff
+      - equipment
+      - treatment
+    properties:
+      counselling:
+        type: "integer"
+        example: 5
+      staff:
+        type: "integer"
+        example: 5
+      equipment:
+        type: "integer"
+        example: 5
+      treatment:
+        type: "integer"
+        example: 5
+      comment:
+        type: "string"
+        example: "Sample comment"
+
+  User.Points.Response.Success:
+    type: "object"
+    required:
+      - customer_id
+      - total_points
+      - expiring_points
+    properties:
+      customer_id:
+        type: "integer"
+        example: 700
+      total_points:
+        type: "integer"
+        example: 200000
+      expiring_points:
+        type: "integer"
+        example: 0
+
+  User.Profile.Response.Success:
+    type: "object"
+    required:
+      - customer_id
+      - total_points
+      - expiring_points
+      - notification_count
+    properties:
+      customer_id:
+        type: "integer"
+        example: 700
+      total_points:
+        type: "integer"
+        example: 200000
+      expiring_points:
+        type: "integer"
+        example: 0
+      notification_count:
+        type: "integer"
+        example: 0
+
+  User.Point.History.List.Response.Success:
+    allOf:
+      - $ref: "#/definitions/Paginated.Response"
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/User.Point.History.List.Record"
+
+  User.Point.History.List.Record:
+    type: "object"
+    required:
+      - name
+      - point
+      - created_at
+    properties:
+      name:
+        type: "string"
+        example: "Sample ticket purchase"
+      point:
+        type: "integer"
+        example: 500
+      created_at:
+        type: "string"
+        example: "2019-08-10"
+
+  User.NotificationSettings:
+    type: "object"
+    required:
+      - reservation
+      - usage
+      - payment
+    properties:
+      reservation:
+        type: "boolean"
+        example: true
+      usage:
+        type: "boolean"
+        example: false
+      payment:
+        type: "boolean"
+        example: true
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com
+basePath: /kumapon/kireipass-api/2.0.0
