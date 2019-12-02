@@ -544,6 +544,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         400:
           description: "Bad request"
           schema:
@@ -575,6 +577,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         400:
           description: "Bad request"
           schema:
@@ -671,6 +675,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         400:
           description: "Invalid e-mail address"
           schema:
@@ -699,6 +705,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         401:
           description: "Unauthorized"
           schema:
@@ -716,6 +724,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         401:
           description: "Unauthorized"
           schema:
@@ -757,6 +767,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         400:
           description: "Invalid e-mail address"
           schema:
@@ -2061,14 +2073,17 @@ definitions:
     required:
       - id
     properties:
-      id:
+      status:
+        example: "ok"
+      TranID:
         type: "string"
-        description: "Order ID"
-        example: "id123"
-      payment_deadline:
+        example: "<TranID>"
+      my_payment_id:
         type: "string"
-        description: "Payment deadline. This is set only in case of conbini payment."
-        example: "2019-08-10T13:21:39+00:00"
+        example: "<my_payment_id>"
+      my_total_price:
+        type: "string"
+        example: "<my_total_price>"
 
   Stations.List.Station:
     type: "object"
@@ -2177,7 +2192,7 @@ definitions:
       - is_bookmarked
       - reward_point
       - tags
-      - feature
+      - features
       - recommended_for
       - treatment_details
       - treatment_flow_details
@@ -2237,7 +2252,7 @@ definitions:
         items:
           type: "string"
           example: "tag"
-      feature:
+      features:
         type: "string"
         example: "<feature>"
       recommended_for:
@@ -2319,6 +2334,15 @@ definitions:
       expired:
         type: "boolean"
         example: false
+      clinic_description:
+        type: "string"
+        example: "<clinic_description>"
+      title_tag:
+        type: "string"
+        example: "<title_tag>"
+      button_status:
+        type: "string"
+        example: "<button_status>"
 
   RelevantTickets.List.Ticket:
     type: "object"
