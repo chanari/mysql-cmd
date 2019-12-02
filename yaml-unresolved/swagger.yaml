@@ -1306,7 +1306,7 @@ paths:
     post:
       tags:
         - "users"
-      summary: "Registers the purchased ticket for usage."
+      summary: "Create the user QA."
       parameters:
         - in: body
           name: qa
@@ -1326,7 +1326,7 @@ paths:
     post:
       tags:
         - "users"
-      summary: "Registers the purchased ticket for usage."
+      summary: "Create the clinic QA."
       parameters:
         - in: body
           name: qa
