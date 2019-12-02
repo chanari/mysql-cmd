@@ -3161,13 +3161,28 @@ definitions:
         example: "ok"
         
   User.PointHistory:
-    allOf:
-      - type: object
-        properties:
-          data:
-            type: array
-            items:
-              $ref: "#/definitions/AreaKeywordSuggestions.List.KeywordSuggestion"
+    type: "object"
+    properties:
+      total_point:
+        type: "string"
+        example: "<total_point>"
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            amount:
+              type: "integer"
+              example: 1
+            change_method:
+              type: "string"
+              example: "<change_method>"
+            is_invested:
+              type: "boolean"
+              example: "true"
+            created_at:
+              type: "string"
+              example: "2019/11/30"
         
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
