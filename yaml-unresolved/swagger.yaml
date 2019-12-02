@@ -2836,6 +2836,15 @@ definitions:
       reservation_info:
         type: "string"
         example: "Lorem ipsum…"
+      clinic_images:
+        type: "string"
+        example: "<clinic_images>"
+      ticket_name:
+        type: "string"
+        example: "<ticket_name>"
+      clinic_name:
+        type: "string"
+        example: "<clinic_name>"
 
   User.PaymentInfo.Success:
     type: "object"
