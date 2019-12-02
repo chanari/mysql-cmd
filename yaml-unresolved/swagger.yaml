@@ -1301,6 +1301,26 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/Error.Unauthorized"
+            
+  /users/qa/user_qa:
+    post:
+      tags:
+        - "users"
+      summary: "Registers the purchased ticket for usage."
+      parameters:
+        - in: body
+          name: qa
+          schema:
+            $ref: "#/definitions/User.QA.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
 
   /users/points/history:
     get:
@@ -3146,6 +3166,27 @@ definitions:
             created_at:
               type: "string"
               example: "2019/11/30"
+              
+  User.QA.Request:
+    type: "object"
+    required:
+      - email
+      - question_type
+      - question_detail
+      - subject
+    properties:
+      email:
+        type: "string"
+        example: "<email>"
+      question_type:
+        type: "string"
+        example: "<question_type>"
+      question_detail:
+        type: "string"
+        example: "<question_detail>"
+      subject:
+        type: "string"
+        example: "<subject>"
         
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
