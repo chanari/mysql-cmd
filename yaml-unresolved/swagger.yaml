@@ -71,7 +71,27 @@ paths:
         200:
           description: "Success"
           schema:
-            $ref: "#/definitions/Stations.List.Response.Success"
+            allOf:
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: "object"
+                      required:
+                        - id
+                        - name
+                        - furigana_name
+                      properties:
+                        id:
+                          type: "integer"
+                          example: 19800
+                        name:
+                          type: "string"
+                          example: "渋谷"
+                        furigana_name:
+                          type: "string"
+                          example: "しぶや"
 
 
   /coupons/verify:
@@ -158,29 +178,6 @@ paths:
           schema:
             $ref: "#/definitions/Error.NotFound"
 
-  /meta/app-version:
-    get:
-      tags:
-        - "meta"
-      summary: "Returns information about latest available application version"
-      parameters:
-        - in: "query"
-          name: "platform"
-          description: "Mobile OS platform (ios)"
-          type: "string"
-          enum: ["ios"]
-          required: true
-        - in: "query"
-          name: "version"
-          description: "Version of application requesting the app version information (example: '1.0.0')"
-          type: "string"
-          required: true
-      responses:
-        200:
-          description: "Success"
-          schema:
-            $ref: "#/definitions/Meta.AppVersion.Response.Success"
-
   /meta/auth-info:
     get:
       tags:
@@ -240,6 +237,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         401:
           description: "Unauthorized"
           schema:
@@ -352,6 +351,8 @@ paths:
       responses:
         200:
           description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         400:
           description: "Bad request"
           schema:
@@ -3051,6 +3052,14 @@ definitions:
       payment:
         type: "boolean"
         example: true
+        
+  Response.StatusOK:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "ok"
+        
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
 basePath: /kumapon/kireipass-api/2.0.0
