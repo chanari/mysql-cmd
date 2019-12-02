@@ -579,10 +579,35 @@ paths:
           description: "Success"
           schema:
             $ref: "#/definitions/Response.StatusOK"
-        400:
-          description: "Bad request"
+        401:
+          description: "Unauthorized"
           schema:
-            $ref: "#/definitions/Error.Bookmarks.NotABookmark"
+            $ref: "#/definitions/Error.Unauthorized"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.NotFound"
+            
+  /tickets/{id}/unbookmark:
+    post:
+      tags:
+        - "tickets"
+      summary: "Removes ticket from the list of bookmarked tickets for given user"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Ticket ID"
+          type: "string"
+          required: true
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/Response.StatusOK"
         401:
           description: "Unauthorized"
           schema:
@@ -687,17 +712,54 @@ paths:
             $ref: "#/definitions/Error.User.DuplicateEmail"
 
   /users/logout:
+    get:
+      tags:
+        - "users"
+      summary: "Logs the current user out."
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              url:
+                type: "string"
+                example: "<url>"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
     post:
       tags:
         - "users"
       summary: "Logs the current user out."
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Device token of the current device"
-          required: true
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
           schema:
-            $ref: "#/definitions/PushNotification.DeviceToken.Register.Request"
+            type: "object"
+            properties:
+              url:
+                type: "string"
+                example: "<url>"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+            
+  /users/cancel_account:
+    get:
+      tags:
+        - "users"
+      summary: "Cancel the current account."
       security:
         - access_token: []
         - client: []
@@ -1253,7 +1315,7 @@ paths:
         200:
           description: "Success"
           schema:
-            $ref: "#/definitions/User.Point.History.List.Response.Success"
+            $ref: "#/definitions/User.PointHistory"
         401:
           description: "Unauthorized"
           schema:
@@ -1510,16 +1572,6 @@ definitions:
         type: "string"
         example: "The credit card could not be registered."
 
-  Error.User.Order.Payment.PurchaseFailure:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        example: 142
-      message:
-        type: "string"
-        example: "The purchase of the ticket failed."
-
   AreaKeywordSuggestions.List.Response.Success:
     allOf:
       - type: object
@@ -1723,23 +1775,6 @@ definitions:
       station_detail:
         type: "string"
         example: "渋谷"
-
-  Meta.AppVersion.Response.Success:
-    type: "object"
-    required:
-      - platform
-      - last_version
-      - force_version_up
-    properties:
-      platform:
-        type: "integer"
-        example: 1
-      last_version:
-        type: "string"
-        example: "1.1.1"
-      force_version_up:
-        type: boolean
-        example: true
 
   Meta.AuthInfo.Response.Success:
     type: "object"
@@ -1972,15 +2007,6 @@ definitions:
         type: "integer"
         example: 20
 
-  Stations.List.Response.Success:
-    allOf:
-      - type: object
-        properties:
-          data:
-            type: array
-            items:
-              $ref: "#/definitions/Stations.List.Station"
-
   Parts.List.Response.Success:
     allOf:
       - type: object
@@ -1999,45 +2025,6 @@ definitions:
       name:
         type: "string"
         example: "Sample Part"
-
-  Parts.TreatmentCategories.List.Response.Success:
-    allOf:
-      - $ref: "#/definitions/Paginated.Response"
-      - type: object
-        properties:
-          data:
-            type: array
-            items:
-              $ref: "#/definitions/Parts.TreatmentCategories.List.TreatmentCategory"
-            example:
-              - id: 1
-                name: "Sample Treatment Category 1"
-                treatments:
-                  - id: 2
-                    name: "Sample Treatment 1"
-              - id: 3
-                name: "Sample Treatment Category 2"
-                treatments:
-                  - id: 4
-                    name: "Sample Treatment 2"
-
-  Parts.TreatmentCategories.List.TreatmentCategory:
-    type: "object"
-    required:
-      - id
-      - name
-      - treatments
-    properties:
-      id:
-        type: "integer"
-        example: 1
-      name:
-        type: "string"
-        example: "Sample Treatment"
-      treatments:
-        type: "array"
-        items:
-          $ref: "#/definitions/Treatments.List.Treatment"
 
   Treatments.List.Treatment:
     type: "object"
@@ -3172,6 +3159,15 @@ definitions:
       status:
         type: "string"
         example: "ok"
+        
+  User.PointHistory:
+    allOf:
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: "#/definitions/AreaKeywordSuggestions.List.KeywordSuggestion"
         
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
