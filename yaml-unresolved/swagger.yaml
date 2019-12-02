@@ -1261,6 +1261,25 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/Error.Unauthorized"
+            
+  /users/satori-transfer:
+    get:
+      tags:
+        - "users"
+      summary: "Transfers users information to Satori."
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              customer_hashcode:
+                type: "string"
+                example: "<customer_hashcode>"
 
 securityDefinitions:
   access_token:
