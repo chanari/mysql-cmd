@@ -1522,11 +1522,57 @@ paths:
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/Error.Unauthorized"
+    get:
+      tags:
+        - "reviews"
+      summary: "Gets a user's review."
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Ticket ID"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "ver"
+          description: "Ticket verison"
+          type: "string"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              ticket_id:
+                type: "string"
+                example: "krt1"
+              ticket_title:
+                type: "string"
+                example: "Lorem ipsum..."
+              parent_id_sale:
+                type: "string"
+                example: "krt1"
+              version_sale:
+                type: "string"
+                example: "0"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
     put:
       tags:
         - "reviews"
       summary: "Updates a user's review."
       parameters:
+        - in: "path"
+          name: "id"
+          description: "Review ID"
+          type: "string"
+          required: true
         - in: body
           name: data
           schema:
