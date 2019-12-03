@@ -1476,6 +1476,11 @@ paths:
       tags:
         - "users"
       summary: "Transfers users information to Satori."
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: "#/definitions/User.NotificationSettings"
       security:
         - access_token: []
         - client: []
@@ -1489,6 +1494,60 @@ paths:
               customer_hashcode:
                 type: "string"
                 example: "<customer_hashcode>"
+      
+  /reviews:
+    post:
+      tags:
+        - "reviews"
+      summary: "Creates a user's review."
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: "#/definitions/Review.Params.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "ok"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
+    put:
+      tags:
+        - "reviews"
+      summary: "Updates a user's review."
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: "#/definitions/Review.Params.Request"
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "ok"
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Error.Unauthorized"
 
 securityDefinitions:
   access_token:
@@ -1550,7 +1609,7 @@ definitions:
         example: 1
       message:
         type: "string"
-        example: "Access credential is invalid."
+        example: "権限がありません。"
 
   Error.NotFound:
     type: "object"
@@ -3290,6 +3349,34 @@ definitions:
       question_content:
         type: "string"
         example: "<question_content>"
+        
+  Review.Params.Request:
+    type: "object"
+    required:
+     - ticket_id
+     - comment
+     - review_properties_attributes
+    properties:
+      ticket_id:
+        type: "string"
+        example: "krt1"
+      comment:
+        type: "string"
+        example: "Lorem ipsum..."
+      review_properties_attributes:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            id:
+              type: "integer"
+              example: 1
+            property_id:
+              type: "integer"
+              example: 1
+            point:
+              type: "integer"
+              example: 1
         
 # Added by API Auto Mocking Plugin
 host: virtserver.swaggerhub.com
