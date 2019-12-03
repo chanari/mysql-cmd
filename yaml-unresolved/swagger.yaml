@@ -39,6 +39,60 @@ tags:
     description: "Everything about users"
 
 paths:
+  /lp_page_v2:
+    get:
+      tags:
+        - "advertising pages"
+      summary: "Transfers users information to Satori."
+      parameters:
+        - in: "query"
+          name: "path_one"
+          description: "Advertising path"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "path_two"
+          description: "Advertising path"
+          type: "string"
+          required: true
+        - in: "query"
+          name: "preview"
+          description: "Preview param"
+          type: "boolean"
+          required: false
+          default: "false"
+          enum: ["false", "true"]
+        - in: "query"
+          name: "sort"
+          description: "Sort param"
+          type: "boolean"
+          required: false
+          default: "asc"
+          enum: ["asc", "desc"]
+        - in: "query"
+          name: "page"
+          description: "Page number"
+          type: "integer"
+          required: false
+        - in: "query"
+          name: "size"
+          description: "Page size"
+          type: "integer"
+          required: false
+      security:
+        - access_token: []
+        - client: []
+        - uid: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "object"
+            properties:
+              customer_hashcode:
+                type: "string"
+                example: "<customer_hashcode>"
+                
   /areas/suggestions:
     get:
       tags:
