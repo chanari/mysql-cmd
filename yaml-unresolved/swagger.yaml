@@ -43,7 +43,7 @@ paths:
     get:
       tags:
         - "advertising pages"
-      summary: "Transfers users information to Satori."
+      summary: "Shows tickets on sale."
       parameters:
         - in: "query"
           name: "path_one"
@@ -79,10 +79,6 @@ paths:
           description: "Page size"
           type: "integer"
           required: false
-      security:
-        - access_token: []
-        - client: []
-        - uid: []
       responses:
         200:
           description: "Success"
