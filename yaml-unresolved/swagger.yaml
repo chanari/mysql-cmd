@@ -3359,7 +3359,7 @@ definitions:
     properties:
       ticket_id:
         type: "string"
-        example: "krt1"
+        example: "1"
       comment:
         type: "string"
         example: "Lorem ipsum..."
