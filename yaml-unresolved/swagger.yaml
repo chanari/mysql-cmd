@@ -42,7 +42,7 @@ paths:
   /lp_page_v2:
     get:
       tags:
-        - "advertising pages"
+        - "advertising"
       summary: "Shows tickets on sale."
       parameters:
         - in: "query"
