@@ -288,7 +288,11 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "お知らせが見つかりません。"
 
   /issue-categories/{id}:
     get:
@@ -373,36 +377,6 @@ paths:
           description: "Success"
           schema:
             $ref: "#/definitions/Issues.List.Response.Success"
-
-  /push-notifications/device-tokens:
-    post:
-      tags:
-        - "push-notifications"
-      summary: "Registers the device token of the current user"
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Device token to be registered"
-          required: true
-          schema:
-            $ref: "#/definitions/PushNotification.DeviceToken.Register.Request"
-      security:
-        - access_token: []
-        - client: []
-        - uid: []
-      responses:
-        200:
-          description: "Success"
-          schema:
-            $ref: "#/definitions/Response.StatusOK"
-        400:
-          description: "Bad request"
-          schema:
-            $ref: "#/definitions/Error.RequiredParameterMissing"
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Error.Unauthorized"
 
   /search:
     post:
@@ -535,7 +509,7 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            $ref: "#/definitions/Error.Ticket.NotFound"
 
   /tickets/{id}/relevant:
     get:
@@ -566,7 +540,7 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            $ref: "#/definitions/Error.Ticket.NotFound"
 
   /tickets/{id}/bookmark:
     post:
@@ -591,7 +565,11 @@ paths:
         400:
           description: "Bad request"
           schema:
-            $ref: "#/definitions/Error.Bookmarks.AlreadyBookmarked"
+            type: "object"
+            properties:
+              errors:
+                type: "object"
+                example: "<bookmark_errors>"
         401:
           description: "Unauthorized"
           schema:
@@ -599,7 +577,7 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            $ref: "#/definitions/Error.Ticket.NotFound"
 
   /tickets/{id}/remove-bookmark:
     post:
@@ -620,7 +598,11 @@ paths:
         200:
           description: "Success"
           schema:
-            $ref: "#/definitions/Response.StatusOK"
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "ok"
         401:
           description: "Unauthorized"
           schema:
@@ -628,7 +610,7 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            $ref: "#/definitions/Error.Ticket.NotFound"
             
   /tickets/{id}/unbookmark:
     post:
@@ -650,6 +632,14 @@ paths:
           description: "Success"
           schema:
             $ref: "#/definitions/Response.StatusOK"
+        400:
+          description: "Bad request"
+          schema:
+            type: "object"
+            properties:
+              errors:
+                type: "object"
+                example: "<bookmark_errors>"
         401:
           description: "Unauthorized"
           schema:
@@ -657,7 +647,7 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            $ref: "#/definitions/Error.Ticket.NotFound"
 
   /tickets/{id}/order:
     post:
@@ -872,7 +862,14 @@ paths:
         200:
           description: "Success"
           schema:
-            $ref: "#/definitions/Response.StatusOK"
+            type: "object"
+            properties:
+              status:
+                type: "string"
+                example: "200"
+              email:
+                type: "string"
+                example: "user@email.com"
         400:
           description: "Invalid e-mail address"
           schema:
@@ -1200,19 +1197,23 @@ paths:
         400:
           description: "Already used"
           schema:
-            $ref: "#/definitions/Error.User.Order.AlreadyUsed"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "購入履歴が見つかりませんでした。"
         401:
           description: "Unauthorized"
           schema:
             $ref: "#/definitions/Error.Unauthorized"
-        402:
-          description: "Not paid yet"
-          schema:
-            $ref: "#/definitions/Error.User.Order.NotPaid"
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "購入履歴が見つかりませんでした。"
 
   /users/orders/{id}/payment-info/conbini:
     get:
@@ -1679,6 +1680,13 @@ definitions:
       message:
         type: "string"
         example: "クリニックが見つかりませんでした。"
+        
+  Error.Ticket.NotFound:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "チケットが見つかりません。"
 
   Error.RequiredParameterMissing:
     type: "object"
