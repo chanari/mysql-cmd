@@ -162,19 +162,11 @@ paths:
         200:
           description: "Success"
           schema:
-            $ref: "#/definitions/Coupon.Verify.Success"
-        400:
-          description: "Bad request"
-          schema:
-            $ref: "#/definitions/Error.RequiredParameterMissing"
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Error.Unauthorized"
-        404:
-          description: "Not found"
-          schema:
-            $ref: "#/definitions/Error.NotFound"
+            type: "object"
+            properties:
+              discount:
+                type: "integer"
+                example: 0
 
   /clinics/{id}:
     get:
@@ -195,7 +187,7 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            $ref: "#/definitions/Error.Clinic.NotFound"
 
   /clinics/{id}/tickets:
     get:
@@ -226,7 +218,7 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            $ref: "#/definitions/Error.Clinic.NotFound"
 
   /meta/auth-info:
     get:
@@ -1680,6 +1672,13 @@ definitions:
       message:
         type: "string"
         example: "Requested entity was not found."
+        
+  Error.Clinic.NotFound:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        example: "クリニックが見つかりませんでした。"
 
   Error.RequiredParameterMissing:
     type: "object"
