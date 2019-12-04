@@ -39,7 +39,7 @@ tags:
     description: "Everything about users"
 
 paths:
-  /lp_page_v2:
+  /lp_page:
     get:
       tags:
         - "advertising"
@@ -3498,5 +3498,5 @@ definitions:
               example: 1
         
 # Added by API Auto Mocking Plugin
-host: virtserver.swaggerhub.com
-basePath: /kumapon/kireipass-api/2.0.0
+host: api.kireipass.jp
+basePath: /api/v3
