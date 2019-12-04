@@ -1238,7 +1238,11 @@ paths:
         400:
           description: "Already paid"
           schema:
-            $ref: "#/definitions/Error.User.Order.PaymentInfo.AlreadyPaid"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "購入履歴が見つかりませんでした。"
         401:
           description: "Unauthorized"
           schema:
@@ -1246,11 +1250,19 @@ paths:
         403:
           description: "Bad payment method"
           schema:
-            $ref: "#/definitions/Error.User.Order.PaymentInfo.IncorrectPaymentMethod"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "<errors>"
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "購入履歴が見つかりませんでした。"
 
   /users/orders/{id}/use:
     post:
@@ -1279,7 +1291,11 @@ paths:
         400:
           description: "Bad request"
           schema:
-            $ref: "#/definitions/Error.RequiredParameterMissing"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "バリデーションに失敗しました。"
         401:
           description: "Unauthorized"
           schema:
@@ -1316,7 +1332,11 @@ paths:
         400:
           description: "Bad request"
           schema:
-            $ref: "#/definitions/Error.RequiredParameterMissing"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "<review_errors>"
         401:
           description: "Unauthorized"
           schema:
@@ -1324,7 +1344,11 @@ paths:
         404:
           description: "Not found"
           schema:
-            $ref: "#/definitions/Error.NotFound"
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "購入履歴が見つかりませんでした。"
 
   /users/points:
     get:
@@ -1442,6 +1466,14 @@ paths:
           description: "Success"
           schema:
             $ref: "#/definitions/Response.StatusOK"
+        400:
+          description: "Bad request"
+          schema:
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "バリデーションに失敗しました。"
         401:
           description: "Unauthorized"
           schema:
@@ -1511,6 +1543,14 @@ paths:
               message:
                 type: "string"
                 example: "ok"
+        400:
+          description: "Bad request"
+          schema:
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "<review_errors>"
         401:
           description: "Unauthorized"
           schema:
@@ -1566,6 +1606,10 @@ paths:
                     name:
                       type: "string"
                       example: "<property_name>"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error.Ticket.NotFound"
         401:
           description: "Unauthorized"
           schema:
@@ -1597,6 +1641,14 @@ paths:
               message:
                 type: "string"
                 example: "ok"
+        400:
+          description: "Bad request"
+          schema:
+            type: "object"
+            properties:
+              errors:
+                type: "string"
+                example: "<review_errors>"
         401:
           description: "Unauthorized"
           schema:
